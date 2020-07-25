@@ -25,26 +25,19 @@ object KaffeekasseRoutes {
     }
   }
 
-  case class Message(message: String)
-  import sttp.tapir._
-  import sttp.tapir.json.circe._
-  import io.circe.generic.auto._
 
-  val helloEndpoint: Endpoint[(String), String, Message, Nothing] =
-    endpoint.get
-      .in("hello" / path[String]("name"))
-      .errorOut(stringBody)
-      .out(jsonBody[Message])
+  import domain._
+  import endpoints._
 
-  def helloWorldRoutes[F[_]: Sync: ContextShift: Timer](
-    H: HelloWorld[F]
-  )(implicit serverOptions: Http4sServerOptions[F]): HttpRoutes[F] = {
-    val dsl = new Http4sDsl[F] {}
-    import dsl._
-    helloEndpoint.toRoutes(name =>
-      for {
-        greeting <- H.hello(HelloWorld.Name(name))
-      } yield Message(greeting.greeting).asRight
-    )
+  private[this] def hello[F[_]: Sync](name: String, H: HelloWorld[F]): F[Either[String, Message]] =
+    for {
+      greeting <- H.hello(HelloWorld.Name(name))
+    } yield Message(greeting.greeting).asRight
+
+  def helloWorldRoutes[F[_]: Sync: ContextShift](
+    H: HelloWorld[F],
+    serverOptions: Http4sServerOptions[F]
+  ): HttpRoutes[F] = {
+    helloEndpoint.toRoutes(x => hello(x, H))
   }
 }

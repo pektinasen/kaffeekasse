@@ -26,6 +26,8 @@ lazy val root = (project in file("."))
       "com.softwaremill.sttp.tapir" %% "tapir-core" % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % TapirVersion,
       "com.github.ghostdogpr" %% "caliban" % CalibanVersion,
       "com.github.ghostdogpr" %% "caliban-http4s" % CalibanVersion,
       "com.github.ghostdogpr" %% "caliban-cats" % CalibanVersion,
@@ -43,14 +45,27 @@ lazy val root = (project in file("."))
 
 scalacOptions ++= Seq(
   "-deprecation",
-  "-encoding",
-  "UTF-8",
+  "-encoding", "UTF-8",
+  "-explaintypes",                     // Explain type errors in more detail.
+  "-feature",
+  "-language:existentials",            // Existential types (besides wildcard types) can be written and inferred
   "-language:higherKinds",
   "-language:postfixOps",
   "-language:implicitConversions",
-  "-feature",
-  "-Xfatal-warnings",
-  "-Ymacro-annotations"
+  "-Xlint:adapted-args",               // Warn if an argument list is modified to match the receiver.
+  // "-Xfatal-warnings",
+  "-Ymacro-annotations",
+  "-Ywarn-dead-code",                  // Warn when dead code is identified.
+  "-Ywarn-numeric-widen",              // Warn when numerics are widened.
+  "-Ywarn-unused:implicits",           // Warn if an implicit parameter is unused.
+  "-Ywarn-unused:imports",             // Warn if an import selector is not referenced.
+  "-Ywarn-unused:locals",              // Warn if a local definition is unused.
+  "-Ywarn-unused:params",              // Warn if a value parameter is unused.
+  "-Ywarn-unused:patvars",             // Warn if a variable bound in a pattern is unused.
+  "-Ywarn-unused:privates",            // Warn if a private member is unused.      
+  "-Ywarn-value-discard"               // Warn when non-Unit expression results are unused.
 )
 
-Global / cancelable := false
+scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")
+
+Global / cancelable := false 

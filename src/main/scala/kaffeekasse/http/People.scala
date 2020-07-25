@@ -3,7 +3,6 @@ package http
 
 import sttp.tapir._
 import sttp.tapir.json.circe._
-import io.circe.generic.auto._
 import domain.types._
 
 import kaffeekasse.http.json._

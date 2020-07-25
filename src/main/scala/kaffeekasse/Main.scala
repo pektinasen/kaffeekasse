@@ -1,11 +1,17 @@
 package kaffeekasse
 
 import cats.effect.{ExitCode, IO, IOApp}
-import cats.implicits._
-import http._
+import sttp.tapir.docs.openapi._
+import sttp.tapir.openapi.OpenAPI
+import sttp.tapir.openapi.circe.yaml._
+import http.endpoints._
 
 object Main extends IOApp {
 
   def run(args: List[String]) =
-    KaffeekasseServer.stream[IO].compile.drain.as(ExitCode.Success)
+    IO {
+      val docs: OpenAPI = people.toOpenAPI("Emmys Kaffeekasse", "1.0")
+      println(docs.toYaml)
+    }.map(_ => ExitCode.Success)
+  // KaffeekasseServer.stream[IO].compile.drain.as(ExitCode.Success)
 }

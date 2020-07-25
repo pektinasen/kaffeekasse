@@ -4,12 +4,13 @@ package http
 import cats.Applicative
 import io.circe._
 import io.circe.generic.semiauto._
-import io.circe.refined._
+
 import io.estatico.newtype._
 import io.estatico.newtype.ops._
 import org.http4s.EntityEncoder
 import org.http4s.circe.jsonEncoderOf
 import sttp.tapir._
+import squants.market._
 
 import domain.types._
 
@@ -41,6 +42,12 @@ private[http] trait JsonCodecs {
     Schema[A](bSchema.schemaType, bSchema.isOptional, bSchema.description, bSchema.format)
   }
 
-  implicit val personDecoder: Decoder[Person] = deriveDecoder[Person]
-  implicit val personEncoder: Encoder[Person] = deriveEncoder[Person]
+  implicit lazy val personDecoder: Decoder[Person] = deriveDecoder[Person]
+  implicit lazy val personEncoder: Encoder[Person] = deriveEncoder[Person]
+
+  implicit lazy val moneyDecoder: Decoder[Money] = Decoder.forProduct1("amount")((amount: Double) => EUR(amount))
+
+  implicit lazy val moneyEncoder: Encoder[Money] =
+    Encoder.forProduct1("amount")(m => s"${m.amount}${m.currency.symbol}")
+  implicit lazy val moneySchema: Schema[Money] = Schema(SchemaType.SNumber)
 }
