@@ -3,7 +3,8 @@ package programs
 
 import cats.Applicative
 import cats.implicits._
-import io.circe.{Encoder, Json}
+import io.circe.Encoder
+import io.circe.Json
 import org.http4s.EntityEncoder
 import org.http4s.circe._
 

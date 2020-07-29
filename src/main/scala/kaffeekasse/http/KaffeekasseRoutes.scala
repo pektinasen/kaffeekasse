@@ -2,14 +2,14 @@ package kaffeekasse
 
 package http
 
+import cats.effect.ContextShift
 import cats.effect._
 import cats.implicits._
 import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
-
 import sttp.tapir.server.http4s._
+
 import programs._
-import cats.effect.ContextShift
 
 object KaffeekasseRoutes {
 
